@@ -43,12 +43,19 @@ public class player : MonoBehaviour
         Rotate();
         Move();
 
-        grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f);
-
-        if(grounded && Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
+    }
+
+    void Move()
+    {
+        h = Input.GetAxisRaw("Horizontal");
+        v = Input.GetAxisRaw("Vertical");
+
+        Vector3 moveVec = transform.forward * v + transform.right * h;
+        transform.position += moveVec.normalized * moveSpeed * Time.deltaTime;
     }
 
     void Rotate()
@@ -63,15 +70,6 @@ public class player : MonoBehaviour
 
         cam.transform.rotation = Quaternion.Euler(-xRotation, yRotation, 0);
         transform.rotation = Quaternion.Euler(0, yRotation, 0);
-    }
-
-    void Move()
-    {
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
-
-        Vector3 moveVec = transform.forward * v + transform.right * h;
-        transform.position += moveVec.normalized * moveSpeed * Time.deltaTime;
     }
 
     void Jump()
