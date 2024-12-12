@@ -64,11 +64,13 @@ public class PlayerMove : MonoBehaviour
     void Move()
     {
 
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
+        h = Input.GetAxisRaw("Horizontal"); // 상하 입력값
+        v = Input.GetAxisRaw("Vertical"); // 좌우 입력값
 
-        Vector3 moveDirection = transform.forward * v + transform.right * h; // 누트키에 움직임을 가함
-        moveDirection.Normalize(); // 이동 방향 정규화
+        // 누른키 값에 따라 움직이는 힘을 가함
+        Vector3 moveDirection = transform.forward * v + transform.right * h;
+        // 이동 방향 정규화
+        moveDirection.Normalize(); 
 
         // 카메라 시야 조정 관련 변수
         Vector3 originalCameraPosition = new Vector3(0, 0.5f, 0); // 기본 카메라 위치
@@ -84,6 +86,7 @@ public class PlayerMove : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             // 이동 속도 감소
+            // 기본 움직이는 값에 -3을 하여 값을 저장
             Vector3 targetPosition = rb.position + moveDirection * (moveSpeed - 3f) * Time.deltaTime;
 
             // 발 아래에서 떨어지지 않도록 체크

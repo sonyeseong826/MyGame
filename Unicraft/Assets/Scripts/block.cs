@@ -25,25 +25,33 @@ public class block : MonoBehaviour
     Transform hitTransform; // 감지된 오브젝트의 Transform
     Vector3 normal; // 감지된 면의 법선 벡터
 
-    Inven inven;
-    Test test;
+    Inven inven; // Inven 클래스 참조 선언
+    Test test; // Test 클래스 참조 선언
 
     // 초기화
     private void Start()
     {
         inven = FindObjectOfType<Inven>();
         test = FindObjectOfType<Test>();
-        // 초기화 작업이 필요하면 여기에 추가
     }
 
     void Update()
     {
         // 현재 파일에 있는 오브젝트를 찾아오긴
+        // AssetDatabase : 모든 에셋 관련 파일 처리 클래스
+        // FindAssets : 특정 에셋 검색 메서드
+        // {test.prefabNames[inven.blocks - 1]} t:Prefab : Prefab 타입에 test.prefabNames[inven.blocks - 1] 이름을 가진 에셋을 검색
+        // * 특정 폴더 내에서 특정 타입의 에셋을 검색
         string[] guids = AssetDatabase.FindAssets($"{test.prefabNames[inven.blocks - 1]} t:Prefab");
 
-        // 찾아온 오브젝트 중에서 첫번째 블록만 사용
+        // GUID를 실제 파일 경로로 변환
+        // AssetDatabase : 모든 에셋 관련 파일 처리 클래스
+        // GUIDToAssetPath : GUID를 실제 경로로 변환 메서드
         string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-        // 오브젝트화를 해서 사용가능한 오브젝트로 저장
+
+        // 경로에서 프리팹 이름만 추출
+        // AssetDatabase : 모든 에셋 관련 파일 처리 클래스
+        // LoadAssetAtPath : 특정 결로에 위치한 에셋을 로드 메서드
         objectSpawn = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
         // 카메라에서 마우스 포인터의 위치를 기반으로 Ray 생성
@@ -51,11 +59,15 @@ public class block : MonoBehaviour
         RaycastHit hit;
 
         // Raycast로 충돌 감지
+
+        // ray : 레이의 시작점과 방향을 정의하는 객체
+        // out hit : 레이캣트 충돌에 대한 정보를 저장하는 출력 매개변수
+        // rayLength : 레이가 검사할 최대 거리
         if (Physics.Raycast(ray, out hit, rayLength))
         {
-            hitTransform = hit.transform; // 충돌된 Transform
-            gameObject = hit.collider.gameObject; // 충돌된 오브젝트
-            normal = hit.normal; // 충돌된 면의 법선 벡터
+            hitTransform = hit.transform; // hit.transform : 충돌된 객체 위치
+            gameObject = hit.collider.gameObject; // hit.collider.gameObject : 충돌된 오브젝트 이벤트 처리
+            normal = hit.normal; // hit.normal : 충돌된 면의 법선 벡터
         }
         else
         {
@@ -63,6 +75,7 @@ public class block : MonoBehaviour
             hitTransform = null;
             gameObject = null;
             normal = Vector3.zero;
+            // 값 초기화
         }
 
         // 마우스 왼쪽 버튼 클릭 시 감지된 오브젝트 제거
@@ -87,6 +100,7 @@ public class block : MonoBehaviour
                     spawnPosition = new Vector3(x, y, z);
 
                     Instantiate(objectSpawn, spawnPosition, spawnRotation);
+                    // Instantiate(오브젝트, 위치, 각도);
                 }
                 else if (normal == Vector3.left) // 왼쪽 면
                 {

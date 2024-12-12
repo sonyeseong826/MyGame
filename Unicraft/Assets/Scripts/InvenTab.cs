@@ -24,7 +24,6 @@ public class InvenTab : MonoBehaviour
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
                 game = true;
-                Debug.Log("!E");
             }
         }
         else
@@ -35,7 +34,6 @@ public class InvenTab : MonoBehaviour
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
                 game = false;
-                Debug.Log("E");
             }
         }
     }
