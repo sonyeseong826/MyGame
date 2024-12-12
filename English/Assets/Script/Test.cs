@@ -1,6 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 
 public class Test : MonoBehaviour
@@ -21,13 +24,29 @@ public class Test : MonoBehaviour
     int Wcount = 1;
     int IsGame = 0;
 
+    public GameObject WinUI;
+    public Text WinText;
+    public bool Win;
+    public string WinName;
+
     private void Start()
     {
+        Win = false;
+        WinUI.SetActive(false);
     }
 
     void Update()
     {
-        GetBaduk();
+        GameWin();
+
+        if (!Win)
+        {
+            GetBaduk();
+        }
+        else
+        {
+            GameReStart();
+        }
     }
 
     void GetBaduk()
@@ -62,7 +81,7 @@ public class Test : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.transform.gameObject.tag != "Baduk W" && hit.transform.gameObject.tag != "Baduk B")
+                if (hit.transform.gameObject.tag != "Black" && hit.transform.gameObject.tag != "White")
                 {
                     if(IsGame == 0)
                     {
@@ -85,9 +104,26 @@ public class Test : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("이미있다");
+                    //Debug.Log("이미있다");
                 }
             }
+        }
+    }
+
+    void GameWin()
+    {
+        if(Win)
+        {
+            WinText.text = WinName + " Win";
+            WinUI.SetActive(true);
+        }
+    }
+
+    void GameReStart()
+    {
+        if (Win && Input.GetMouseButtonDown(0))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

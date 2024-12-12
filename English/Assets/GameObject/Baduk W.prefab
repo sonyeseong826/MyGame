@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -6497809089624607115}
   m_Layer: 0
   m_Name: Baduk W
-  m_TagString: Baduk W
+  m_TagString: White
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,3 +118,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4846e9a38120d348b2923b20725b3c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsGame: 0
+  WinObject: 

@@ -4,8 +4,8 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Baduk W
-  - Baduk B
+  - Black
+  - White
   layers:
   - Default
   - TransparentFX
