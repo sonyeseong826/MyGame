@@ -1,135 +1,214 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEditor;
+using TMPro.Examples;
+using System.Diagnostics.Tracing;
+using TMPro;
+using Unity.VisualScripting;
 
 public class GameSystem : MonoBehaviour
 {
     int[] num = { 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048 };
 
-    Image Color1, Color2, Color3, Color4, Color5
-        , Color6, Color7, Color8, Color9, Color10, Color11;
-
-    Image image;
-
     Vector2 v2;
+    public bool test;
 
-    public Text text;
-    public RectTransform rectTransform;
+    public bool Coll;
+    public Vector2 objectV2;
+    public string objectName;
 
+    ObjectSpawn objectSpawn;
+    GameSystem gameSystem;
+    public Quaternion spawnRotation = Quaternion.identity;
+    Vector2 obcol;
 
+    public GameObject Cube;
+    public int SpawnCube;
+    public GameObject DeleteCube;
+    Vector2 spawmV2;
 
-    // Y : 190, -140, -470, -800 : -330
-    // X : -500, -165, 165, 500 : +330
+    // X : -1.6039, -0.5344, 0.5351, 1.6046 : +1.0695
+    // Y : 0.631, -0.4378, -1.5066, -2.5754 : -1.0688
 
     int Count;
     void Start()
     {
-        Count = 0;
+        objectSpawn = FindObjectOfType<ObjectSpawn>();
 
-        v2 = rectTransform.localPosition;
-
-        Debug.Log(v2);
-
-        //Color1.color = new Color(238, 228, 218, 255);
-        //Color2.color = new Color(238, 225, 201, 255);
-        //Color3.color = new Color(243, 178, 122, 255);
-        //Color4.color = new Color(246, 150, 100, 255);
-        //Color5.color = new Color(247, 124, 95, 255);
-        //Color6.color = new Color(247, 95, 59, 255);
-        //Color7.color = new Color(237, 208, 115, 255);
-        //Color8.color = new Color(236, 203, 98, 255);
-        //Color9.color = new Color(237, 201, 80, 255);
-        //Color10.color = new Color(237, 197, 63, 255);
-        //Color11.color = new Color(237, 194, 46, 255);
-
-
-        image = gameObject.GetComponent<Image>();
+        test = false;
+        objectSpawn.spawn = false;
+        Coll = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        v2 = transform.position;
         CubeMove();
-
-        if(Input.GetKeyDown(KeyCode.W))
-        {
-            Test();
-        }
     }
 
     async void CubeMove()
     {
-        // 아래클릭
-        if (Input.GetKeyDown(KeyCode.DownArrow))
+        if(gameObject != null)
         {
-            while (v2.y > -800)
+            // 아래클릭
+            if (Input.GetKeyDown(KeyCode.DownArrow) && !test)
             {
-                v2.y -= 30;
-
-                rectTransform.localPosition = v2;
-
-                await Task.Delay(1);
-            }
-        }
-
-        // 위클릭
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            while (v2.y < 190)
-            {
-                v2.y += 30;
-
-                rectTransform.localPosition = v2;
-
-                await Task.Delay(1);
-            }
-        }
-
-        // 오른쪽 클릭
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            while (v2.x < 495)
-            {
-                if (v2.x > 495)
+                objectSpawn.spawn = true;
+                obcol = new Vector2(0, -1.0688f);
+                await Task.Delay(100);
+                test = true;
+                objectV2.y = (-2.5754f - 1.0688f);
+                while (test)
                 {
-                    v2.x = 495;
-                    rectTransform.localPosition = v2;
+                    v2.y -= 0.05344f;
+                    if (transform.position.y <= (objectV2.y + 1.0688f) && objectV2 != null)
+                    {
+                        transform.position = new Vector2(transform.position.x, (objectV2.y + 1.0688f));
+                        test = false;
+                    }
+                    else
+                    {
+                        transform.position = v2;
+                    }
+                    await Task.Delay(1);
                 }
-                else if (v2.x < 495)
-                {
-                    v2.x += 50;
-
-                    rectTransform.localPosition = v2;
-
-                    await Task.Delay(5);
-                }
+                await Task.Delay(10);
+                plus();
             }
-
-        }
-
-        // 왼쪽 클릭
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            while (v2.x > -495)
+            // 위클릭
+            else if (Input.GetKeyDown(KeyCode.UpArrow) && !test)
             {
-                v2.x -= 50;
-
-                rectTransform.localPosition = v2;
-
-                await Task.Delay(5);
+                objectSpawn.spawn = true;
+                obcol = new Vector2(0, 1.0688f);
+                await Task.Delay(100);
+                test = true;
+                objectV2.y = (0.631f + 1.0688f);
+                while (test)
+                {
+                    v2.y += 0.05344f;
+                    if (transform.position.y >= (objectV2.y - 1.0688f) && objectV2 != null)
+                    {
+                        transform.position = new Vector2(transform.position.x, (objectV2.y - 1.0688f));
+                        test = false;
+                    }
+                    else
+                    {
+                        transform.position = v2;
+                    }
+                    await Task.Delay(1);
+                }
+                await Task.Delay(10);
+                plus();
             }
+            // 오른쪽 클릭
+            else if (Input.GetKeyDown(KeyCode.RightArrow) && !test)
+            {
+                objectSpawn.spawn = true;
+                obcol = new Vector2(1.0695f, 0);
+                await Task.Delay(100);
+                test = true;
+                objectV2.x = (1.6046f + 1.0695f);
+                while (test)
+                {
+                    v2.x += 0.053475f;
+                    if (transform.position.x >= (objectV2.x - 1.0695f) && objectV2 != null)
+                    {
+                        transform.position = new Vector2((objectV2.x - 1.0695f), transform.position.y);
+                        test = false;
+                    }
+                    else
+                    {
+                        transform.position = v2;
+                    }
+                    await Task.Delay(1);
+                }
+                await Task.Delay(10);
+                plus();
+            }
+            // 왼쪽 클릭
+            else if (Input.GetKeyDown(KeyCode.LeftArrow) && !test)
+            {
+                objectSpawn.spawn = true;
+                obcol = new Vector2(-1.0695f, 0);
+                await Task.Delay(100);
+                test = true;
+                objectV2.x = (-1.6039f - 1.0695f);
+                while (test)
+                {
+                    v2.x -= 0.053475f;
+                    if (transform.position.x <= (objectV2.x + 1.0695f) && objectV2 != null)
+                    {
+                        transform.position = new Vector2((objectV2.x + 1.0695f), transform.position.y);
+                        test = false;
+                    }
+                    else
+                    {
+                        transform.position = v2;
+                    }
+                    await Task.Delay(1);
+                }
+                await Task.Delay(10);
+                plus();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("객체 제거");
         }
     }
 
-    void Test()
+    async void plus()
     {
-
-        for(float x = rectTransform.localPosition.x; x <= 495; x += 330)
+        if(objectName == transform.name)
         {
-            Debug.Log(x);
+            Debug.Log(objectName+"같다!");
+            Destroy(DeleteCube);
+            objectName = null;
+            papa();
+            await Task.Delay(1000);
+            gameObject.SetActive(false);
+            //Destroy(gameObject);
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other != null)
+        {
+            Debug.Log("닿았다");
+            Coll = true;
+            if(transform.name == other.transform.name)
+            {
+                string SC = other.transform.tag;
+                SpawnCube = (int.Parse(SC));
+                Debug.Log(SpawnCube);
+                objectV2.x = other.gameObject.transform.position.x + obcol.x;
+                objectV2.y = other.gameObject.transform.position.x + obcol.y;
+                spawmV2 = other.gameObject.transform.position;
+                objectName = other.gameObject.name;
+                DeleteCube = other.gameObject;
+            }
+            else
+            {
+                objectV2 = other.gameObject.transform.position;
+                objectName = other.gameObject.name;
+            }
+        }
+        else
+        {
+            Debug.Log("없다!");
+        }
+    }
+
+    void papa()
+    {
+        Cube = (GameObject)AssetDatabase.LoadAssetAtPath($"Assets/Objects/Cube{SpawnCube * 2}.prefab", typeof(GameObject));
+
+        GameObject spawn = Instantiate(Cube, spawmV2, spawnRotation);
+        string name = $"Cube {(SpawnCube * 2).ToString()}";
+
+        Debug.Log(spawmV2);
+        spawn.name = name;
     }
 }
